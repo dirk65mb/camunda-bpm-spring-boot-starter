@@ -21,6 +21,7 @@ import org.camunda.bpm.engine.spring.ProcessEngineFactoryBean;
 import org.camunda.bpm.engine.spring.SpringExpressionManager;
 import org.camunda.bpm.engine.spring.SpringProcessEngineConfiguration;
 import org.camunda.bpm.extension.process_test_coverage.junit.rules.ProcessCoverageInMemProcessEngineConfiguration;
+import org.camunda.bpm.extension.process_test_coverage.spring.SpringProcessWithCoverageEngineConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
@@ -93,7 +94,7 @@ public class InMemProcessEngineConfiguration {
     Resource[] resources = resourceLoader.getResources("classpath:/bpmn/*.bpmn");
     config.setDeploymentResources(resources);
 
-    config.init(withCoverage);
+    config.init();
 
     return config;
   }

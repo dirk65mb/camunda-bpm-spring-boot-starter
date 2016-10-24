@@ -2,6 +2,7 @@ package org.camunda.bpm.spring.boot.starter.example.simple;
 
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
+import org.camunda.bpm.engine.test.Deployment;
 import org.camunda.bpm.engine.test.ProcessEngineRule;
 import org.camunda.bpm.extension.process_test_coverage.junit.rules.TestCoverageProcessEngineRuleBuilder;
 import org.camunda.bpm.spring.boot.starter.example.simple.framework.InMemProcessEngineConfiguration;
@@ -19,6 +20,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.annotation.PostConstruct;
+
 import static org.camunda.bpm.engine.test.assertions.ProcessEngineAssertions.init;
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareAssertions.assertThat;
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.*;
@@ -33,9 +36,24 @@ public class SpringProcessWithCoverageTest {
     InMemProcessEngineConfiguration.withCoverage = true;
   }
 
+  @ClassRule
+  @Rule
+  public static ProcessEngineRule rule;
+
   @Autowired ProcessEngine processEngine;
 
+  @PostConstruct
+  void initRule() {
+    rule = TestCoverageProcessEngineRuleBuilder.create(processEngine).build();
+  }
+
+  @Before
+  public void before() {
+    init(processEngine);
+  }
+
   @Test
+  @Deployment(resources="bpmn/sample.bpmn")
   public void start_and_finish_process() {
     final ProcessInstance processInstance = runtimeService().startProcessInstanceByKey("Sample");
 
